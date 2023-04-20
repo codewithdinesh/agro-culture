@@ -23,9 +23,9 @@ session_destroy();
 	<script src="../js/skel.min.js"></script>
 	<script src="../js/skel-layers.min.js"></script>
 	<script src="../js/init.js"></script>
-	<link rel="stylesheet" href=".././skel.css" />
-	<link rel="stylesheet" href=".././style.css" />
-	<link rel="stylesheet" href=".././style-xlarge.css" />
+	<link rel="stylesheet" href="../css/skel.css" />
+	<link rel="stylesheet" href="../css/style.css" />
+	<link rel="stylesheet" href="../css/style-xlarge.css" />
 </head>
 
 <body>
