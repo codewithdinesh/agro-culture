@@ -132,20 +132,22 @@ if (!isset($_SESSION['logged_in']) or $_SESSION['logged_in'] != 1) {
                                 Profile</a>
                         </div>
 
+
+
                         <?php if ($_SESSION['Category'] == 1) { ?>
                             <div class="p-1 m-1">
                                 <a href="uploadProduct.php" class="btn btn-danger" style="text-decoration: none;">Upload
                                     Product</a>
                             </div>
                             <div class="p-1 m-1">
-                                <a href="FormerOrders.php" class="btn btn-danger" style="text-decoration: none;"> Orders
+                                <a href="Orders.php" class="btn btn-danger" style="text-decoration: none;"> Orders
                                     Recived</a>
                             </div>
-                        <?php } else {    ?>
-                            <div class="p-1 m-1">
-                                <a href="./profile/orders.php" class="btn btn-danger" style="text-decoration: none;">Orders</a>
-                            </div>
+
                         <?php } ?>
+                        <div class="p-1 m-1">
+                            <a href="YourOrders.php" class="btn btn-danger" style="text-decoration: none;">Orders</a>
+                        </div>
 
 
                         <div class="p-1 m-1">

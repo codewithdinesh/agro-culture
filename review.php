@@ -12,7 +12,7 @@ $pid = $_GET['pid'];
 	<title>AgroCulture: Product</title>
 	<meta lang="eng">
 	<meta charset="UTF-8">
-	<title>AgroCulture</title>
+
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta name="description" content="" />
 	<meta name="keywords" content="" />
@@ -64,8 +64,7 @@ $pid = $_GET['pid'];
 				<div class="card d-flex flex-column flex-lg-row justify-content-around ">
 					<div clas="flex-1">
 
-						<img class="image card-img-top " style=" width:350px;	
-					" src="<?php echo $picDestination . ''; ?>" alt="" />
+						<img class="image card-img-top img-fit" style=" width:350px;" src="<?php echo $picDestination . ''; ?>" alt="" />
 					</div>
 
 					<div class="card-body align-left ">
@@ -102,20 +101,23 @@ $pid = $_GET['pid'];
 
 						</div>
 
-						<Div class="d-flex">
+						<div class="d-flex ">
 
-							<div class="m-1 fs-2">
-								<a href="myCart.php?flag=1&pid=<?= $pid; ?>" class="btn btn-primary fs-3" style="text-decoration: none;">
-									<span class="glyphicon glyphicon-shopping-cart">
-										AddToCart
-								</a>
-							</div>
-							<div class="m-1 fs-2">
-								<a href="buyNow.php?pid=<?= $pid; ?>" class="btn btn-primary fs-3" style="text-decoration: none;">
+							<!-- Remove from Cart Button -->
+							<a class="m-1" href="myCart.php?flag=1&pid=<?= $pid; ?>" style="text-decoration: none;">
+								<button type="button" class="btn btn-danger btn-lg">
+									Add to Cart
+								</button>
+							</a>
+							<!-- Buy Now Button -->
+							<a class="m-1" href="buyNow.php?pid=<?= $pid; ?>&fid=<?= $fid; ?>" style="text-decoration: none;">
+								<button type="button" class="btn btn-success btn-lg">
+
 									Buy Now
-								</a>
-							</div>
-						</Div>
+
+								</button>
+							</a>
+						</div>
 					</div>
 
 				</div>

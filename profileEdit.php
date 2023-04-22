@@ -1,126 +1,197 @@
 <?php
-    session_start();
+session_start();
+require 'db.php';
+if (!isset($_SESSION['logged_in']) or $_SESSION['logged_in'] == 0) {
+    $_SESSION['message'] = "You need to first login to access this page !!!";
+    header("Location: ./error.php");
+}
+$user = $_SESSION['Username'];
+
+if ($_SESSION['Category'] != 1) {
+
+    $sql = "SELECT * FROM buyer WHERE busername='$user'";
+
+    $result = mysqli_query($conn, $sql);
+    $num_rows = mysqli_num_rows($result);
+
+    if ($num_rows != 0) {
+        $User = $result->fetch_assoc();
+
+        $current_name = $User["bname"];
+        $current_username = $User["busername"];
+        $current_email = $User["bemail"];
+        $current_mobile = $User["bmobile"];
+        $current_address = $User["baddress"];
+    }
+} else if ($_SESSION['Category'] == 1) {
+
+    $sql = "SELECT * FROM farmer WHERE fusername='$user'";
+
+    $result = mysqli_query($conn, $sql);
+    $num_rows = mysqli_num_rows($result);
+
+    if ($num_rows != 0) {
+        $User = $result->fetch_assoc();
+
+        $current_name = $User["fname"];
+        $current_username = $User["fusername"];
+        $current_email = $User["femail"];
+        $current_mobile = $User["fmobile"];
+        $current_address = $User["faddress"];
+    }
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+
+    if ($_SESSION['Category'] != 1) {
+
+        $sql = "SELECT * FROM buyer WHERE busername='$user'";
+
+        $result = mysqli_query($conn, $sql);
+        $num_rows = mysqli_num_rows($result);
+
+        if ($num_rows == 0) {
+            $_SESSION['message'] = "Invalid User Credentials!";
+            header("location: ../error.php");
+        } else {
+
+            $User = $result->fetch_assoc();
+
+
+            $sql = "UPDATE buyer SET bpassword='$retype_new_password', bhash='$newHash' WHERE bhash='$currHash';";
+
+            $result = mysqli_query($conn, $sql);
+
+            if ($result) {
+                $_SESSION['message'] = "Password changed Successfully!";
+                header("location: .././success.php");
+            } else {
+                $_SESSION['message'] = "Error occurred while changing password<br>Please try again!";
+                header("location: ../error.php");
+            }
+        }
+    } else {
+
+        $sql = "SELECT * FROM farmer WHERE fusername='$user'";
+
+        $result = mysqli_query($conn, $sql);
+        $num_rows = mysqli_num_rows($result);
+
+        if ($num_rows == 0) {
+            $_SESSION['message'] = "Invalid User Credentials!";
+            header("location: ../error.php");
+        } else {
+
+            $User = $result->fetch_assoc();
+
+            $sql = "UPDATE farmer SET fpassword='$retype_new_password', fhash='$newHash' WHERE fhash='$currHash';";
+
+            $result = mysqli_query($conn, $sql);
+
+            if ($result) {
+                $_SESSION['message'] = "Password changed Successfully!";
+                header("location: ../success.php");
+            } else {
+                $_SESSION['message'] = "Error occurred while changing password<br>Please try again!";
+                header("location: ../error.php");
+            }
+        }
+    }
+}
+
 ?>
 
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+<html>
 
-<html lang="en">
-    <head>
-        <title>Profile: <?php echo $_SESSION['Username']; ?></title>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link href="bootstrap\css\bootstrap.min.css" rel="stylesheet">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="bootstrap\js\bootstrap.min.js"></script>
-        <link rel="stylesheet" href="assets/css/main.css" />
-    </head>
+<head>
+    <title>Edit Profile</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 
-    <body class="subpage">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link href="bootstrap\css\bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="bootstrap\js\bootstrap.min.js"></script>
+    <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/skel.min.js"></script>
+    <script src="js/skel-layers.min.js"></script>
+    <script src="js/init.js"></script>
+    <link rel="stylesheet" href="Blog/commentBox.css" />
 
-        <?php
-            require 'menu.php';
-        ?>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 
-        <section id="post" class="wrapper bg-img" data-bg="banner2.jpg">
-            <div class="inner">
-                <div class="box">
-                <header>
-                    <span class="image left"><img src="<?php echo 'images/profileImages/'.$_SESSION['picName'].'?'.mt_rand(); ?>" class="img-circle" class="img-responsive" height="200px"></span>
-                    <br>
-                    <h2><?php echo $_SESSION['Name'];?></h2>
-                    <h4><?php echo $_SESSION['Username'];?></h4>
-                    <br>
-                    <form method="post" action="Profile/updatePic.php" enctype="multipart/form-data">
-                        <input type="file" name="profilePic" id="profilePic">
-                        <br>
-                        <div class="12u$">
-                            <input type="submit" class="button special small" name="upload" value="Upload" />
-                            <input type="submit" class="button special small" name="remove" value="Remove" />
-                        </div>
-                    </form>
-                </header>
-                <form method="post" action="Profile/updateProfile.php">
-                    <div class="row uniform">
-                        <div class="8u 12u$(xsmall)">
-                            <input type="text" name="name" id="name" value="<?php echo $_SESSION['Name'];?>" placeholder="Full Name" required />
-                        </div>
-                        <div class="4u 12u$(xsmall)">
-                            <input type="text" name="mobile" id="mobile" value="<?php echo $_SESSION['MobileNo'];?>" placeholder="Mobile No" required/>
-                        </div>
-                        <div class="6u 12u$(xsmall)">
-                            <input type="text" name="uname" id="uname" value="<?php echo $_SESSION['Username'];?>" placeholder="Username" required/>
-                        </div>
-                        <div class="6u 12u$(xsmall)">
-                            <input type="email" name="email" id="email" value="<?php echo $_SESSION['Email'];?>" placeholder="Email" required/>
-                        </div>
-                        <div class="6u 12u$(xsmall)">
-                            <div class="select-wrapper">
-                              <select name="section" id="section">
-                                    <option value="<?php echo $_SESSION['Section'];?>"><?php echo $_SESSION['Section'];?></option>
-                                    <option value="Band">Band</option>
-                                    <option value="Drama">Drama</option>
-                                    <option value="Dance">Dance</option>
-                                    <option value="Decoration">Decoration</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="6u 12u$(xsmall)">
-                            <input type="text" name="post" id="post" value="<?php echo $_SESSION['Post'];?>" placeholder="Post Name" required/>
-                        </div>
-                        <p>
-                            <b>Education : </b>
-                        </p>
-                        <div class="3u 12u$(small)">
-                            <input type="radio" id="diploma" name="edu" value="Diploma" checked>
-                            <label for="1">Diploma</label>
-                        </div>
-                        <div class="3u 12u$(small)">
-                            <input type="radio" id="btech" name="edu" value="B.TECH">
-                            <label for="btech">B.TECH</label>
-                        </div>
-                         <div class="3u 12u$(small)">
-                            <input type="radio" id="mtech" name="edu" value="M.TECH">
-                            <label for="mtech">M.TECH</label>
-                        </div>s
-                        <p>
-                            <b>Choose Year : </b>
-                        </p>
-                        <div class="2u 12u$(small)">
-                            <input type="radio" id="1" name="year" value="1" checked>
-                            <label for="1">1<sup>st</sup> Year</label>
-                        </div>
-                        <div class="2u 12u$(small)">
-                            <input type="radio" id="2" name="year" value="2">
-                            <label for="2">2<sup>nd</sup> Year</label>
-                        </div>
-                        <div class="2u 12u$(small)">
-                            <input type="radio" id="3" name="year" value="3">
-                            <label for="3">3<sup>rd</sup> Year</label>
-                        </div>
-                         <div class="2u 12u$(small)">
-                            <input type="radio" id="4" name="year" value="4">
-                            <label for="4">4<sup>th</sup> Year</label>
-                        </div>
-                        <div class="12u$">
-                        <center>
-                            <input type="submit" class = "button special" value="Update Profile" />
-                        </center>
-                        </div>
+
+    <noscript>
+        <link rel="stylesheet" href="./skel.css" />
+        <link rel="stylesheet" href="./style.css" />
+        <link rel="stylesheet" href="./style-xlarge.css" />
+    </noscript>
+</head>
+
+<body>
+    <?php
+    require "menu.php"
+    ?>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Edit Profile</h3>
                     </div>
-                </form>
+                    <div class="card-body">
+
+                        <!-- Edit Profile Form -->
+                        <form action="profileEdit.php" method="POST" enctype="multipart/form-data">
+
+                            <!-- Name Field -->
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="<?php echo $User['name']; ?>" required>
+                            </div>
+
+                            <!-- Username Field -->
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" value="<?php echo $User['username']; ?>" required>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="<?php echo $User['email']; ?>" required>
+                            </div>
+
+
+                            <!-- Address Field -->
+                            <div class="form-group">
+                                <label for="addres">Address</label>
+                                <input type="text" class="form-control" id="addres" name="address" value="<?php echo $User['address']; ?>" required>
+                            </div>
+
+
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+
+                        </form>
+
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <!-- Scripts -->
-            <script src="assets/js/jquery.min.js"></script>
-            <script src="assets/js/jquery.scrolly.min.js"></script>
-            <script src="assets/js/jquery.scrollex.min.js"></script>
-            <script src="assets/js/skel.min.js"></script>
-            <script src="assets/js/util.js"></script>
-            <script src="assets/js/main.js"></script>
+    <!-- Include Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-    </body>
+</body>
+
 </html>

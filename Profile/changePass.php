@@ -3,6 +3,11 @@ session_start();
 
 require '../db.php';
 
+if (!isset($_SESSION['logged_in']) or $_SESSION['logged_in'] == 0) {
+    $_SESSION['message'] = "You need to first login to access this page !!!";
+    header("Location: ./error.php");
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $_SESSION['Username'];
     $old_password = filter_var($_POST['old_password']);
@@ -57,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     if ($result) {
                         $_SESSION['message'] = "Password changed Successfully!";
-                        header("location: ../Login/success.php");
+                        header("location: .././success.php");
                     } else {
                         $_SESSION['message'] = "Error occurred while changing password<br>Please try again!";
                         header("location: ../error.php");
@@ -96,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     if ($result) {
                         $_SESSION['message'] = "Password changed Successfully!";
-                        header("location: ../Login/success.php");
+                        header("location: ../success.php");
                     } else {
                         $_SESSION['message'] = "Error occurred while changing password<br>Please try again!";
                         header("location: ../error.php");

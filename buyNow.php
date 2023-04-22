@@ -2,25 +2,47 @@
 session_start();
 require 'db.php';
 $pid = $_GET['pid'];
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $name = $_POST['name'];
-    $city = $_POST['city'];
-    $mobile = $_POST['mobile'];
-    $email = $_POST['email'];
-    $pincode = $_POST['pincode'];
-    $addr = $_POST['addr'];
-    $bid = $_SESSION['id'];
+$fid = $_GET['fid'];
 
-    $sql = "INSERT INTO transaction (bid, pid, name, city, mobile, email, pincode, addr)
-                VALUES ('$bid', '$pid', '$name', '$city', '$mobile', '$email', '$pincode', '$addr')";
-    $result = mysqli_query($conn, $sql);
-    if ($result) {
-        $_SESSION['message'] = "Order Succesfully placed! <br /> Thanks for shopping with us!!!";
-        header('Location: Login/success.php');
+// echo (isset($pid) && $pid !== '');
+echo (isset($fid) && $fid !== '');
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+    if ((isset($pid) && $pid !== '') == 1) {
+
+
+        if ((isset($fid) && $fid !== '') == 1) {
+
+            $name = $_POST['name'];
+            $city = $_POST['city'];
+            $mobile = $_POST['mobile'];
+            $email = $_POST['email'];
+            $pincode = $_POST['pincode'];
+            $addr = $_POST['addr'];
+            $bid = $_SESSION['id'];
+
+            $sql = "INSERT INTO transaction (bid, pid,fid, name, city, mobile, email, pincode, addr)
+                VALUES ('$bid', '$pid','$fid', '$name', '$city', '$mobile', '$email', '$pincode', '$addr')";
+
+            $result = mysqli_query($conn, $sql);
+
+            if ($result) {
+                $_SESSION['message'] = "Order Succesfully placed! <br /> Thanks for shopping with us!!!";
+                header('Location: ./success.php');
+            } else {
+                // echo $result->mysqli_error();
+                $_SESSION['message'] = "Sorry!<br />Order was not placed";
+                header('Location: ./error.php');
+            }
+        } else {
+            echo $result->mysqli_error();
+            $_SESSION['message'] = "Sorry!<br />Please Provide Farmer Id";
+            header('Location: ./error.php');
+        }
     } else {
-        echo $result->mysqli_error();
+        // echo $result->mysqli_error();
         $_SESSION['message'] = "Sorry!<br />Order was not placed";
-        header('Location: Login/error.php');
+        header('Location: ./error.php');
     }
 }
 ?>
@@ -66,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             <section id="two" class="">
                 <div class="container">
                     <center>
-                        <form method="post" action="buyNow.php?pid=<?= $pid; ?>" style="border: 1px solid black; padding: 15px;">
+                        <form method="post" action="buyNow.php?pid=<?= $pid; ?>&fid=<?= $fid ?>" style="border: 1px solid black; padding: 15px;">
                             <center>
                                 <div class="row uniform">
                                     <div class="6u 12u$(xsmall)">

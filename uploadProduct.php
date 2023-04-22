@@ -111,13 +111,13 @@ function dataFilter($data)
 				<h2>Enter the Product Information here..!!</h2>
 				<br>
 				<center>
-					<input type="file" name="productPic"></input>
+					<input type="file" name="productPic" required></input>
 					<br />
 				</center>
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="select-wrapper" style="width: auto">
-							<select name="type" id="type" required style="background-color:white;color: black;">
+							<select name="type" id="type" required style="background-color:white;color: black;" required>
 								<option value="" style="color: black;">- Category -</option>
 								<option value="Fruit" style="color: black;">Fruit</option>
 								<option value="Vegetable" style="color: black;">Vegetable</option>
@@ -126,17 +126,17 @@ function dataFilter($data)
 						</div>
 					</div>
 					<div class="col-sm-6">
-						<input type="text" name="pname" id="pname" value="" placeholder="Product Name" style="background-color:white;color: black;" />
+						<input type="text" required name="pname" id="pname" value="" placeholder="Product Name" style="background-color:white;color: black;" />
 					</div>
 				</div>
 				<br>
 				<div>
-					<textarea name="pinfo" id="pinfo" rows="12"></textarea>
+					<textarea required name="pinfo" id="pinfo" rows="12"></textarea>
 				</div>
 				<br>
 				<div class="row">
 					<div class="col-sm-6">
-						<input type="text" name="price" id="price" value="" placeholder="Price" style="background-color:white;color: black;" />
+						<input type="text" name="price" id="price" value="" required placeholder="Price" style="background-color:white;color: black;" />
 					</div>
 					<div class="col-sm-6">
 						<button class="button fit" style="width:auto; color:black;">Submit</button>
