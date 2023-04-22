@@ -44,60 +44,101 @@ if ($_SESSION['Category'] != 1) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+    $name = $_POST["name"];
+    $username = $_POST["username"];
+    $mobile = $_POST["mobile"];
+    $email = $_POST["email"];
+    $address = $_POST["address"];
 
-    if ($_SESSION['Category'] != 1) {
+    if ((isset($name) && $name !== '') && (isset($username) && $username !== '')  && (isset($email) && $email !== '')  && (isset($mobile) && $mobile !== '')  && (isset($address) && $address !== '')  && (isset($user) && $user !== '')) {
 
-        $sql = "SELECT * FROM buyer WHERE busername='$user'";
+        if ($_SESSION['Category'] != 1) {
 
-        $result = mysqli_query($conn, $sql);
-        $num_rows = mysqli_num_rows($result);
+            // buyer profile edit
 
-        if ($num_rows == 0) {
-            $_SESSION['message'] = "Invalid User Credentials!";
-            header("location: ../error.php");
-        } else {
-
-            $User = $result->fetch_assoc();
-
-
-            $sql = "UPDATE buyer SET bpassword='$retype_new_password', bhash='$newHash' WHERE bhash='$currHash';";
+            $sql = "SELECT * FROM buyer WHERE busername='$user'";
 
             $result = mysqli_query($conn, $sql);
+            $num_rows = mysqli_num_rows($result);
 
-            if ($result) {
-                $_SESSION['message'] = "Password changed Successfully!";
-                header("location: .././success.php");
+            if ($num_rows == 0) {
+                $_SESSION['message'] = "Invalid User Credentials!";
+                header("location: ./error.php");
             } else {
-                $_SESSION['message'] = "Error occurred while changing password<br>Please try again!";
-                header("location: ../error.php");
+
+                $sql = "UPDATE buyer SET bname='$name', busername='$username', bmobile='$mobile', bemail='$email',baddress='$address' WHERE busername='$user';";
+                $result = mysqli_query($conn, $sql);
+
+                if ($result) {
+                    $user = $username;
+                    $_SESSION['Username'] = $username;
+
+
+                    $fetchProfile = "SELECT * FROM buyer WHERE busername='$user'";
+
+                    $fetchProfileResult = mysqli_query($conn, $fetchProfile);
+
+                    $User = $fetchProfileResult->fetch_assoc();
+
+                    $_SESSION['message'] = "Profile Updated Successfully!";
+                    $_SESSION['Email'] = $User['bemail'];
+                    $_SESSION['Name'] = $User['bname'];
+                    $_SESSION['Username'] = $User['busername'];
+                    $_SESSION['Mobile'] = $User['bmobile'];
+                    $_SESSION['Addr'] = $User['baddress'];
+
+                    header("location: ./success.php");
+                } else {
+                    $_SESSION['message'] = "Error occurred while updating profile<br>Please try again!";
+                    header("location: ./error.php");
+                }
+            }
+        } else {
+
+            // farmer profile edit
+            $sql = "SELECT * FROM famer WHERE fusername='$user'";
+
+            $result = mysqli_query($conn, $sql);
+            $num_rows = mysqli_num_rows($result);
+
+            if ($num_rows == 0) {
+                $_SESSION['message'] = "Invalid User Credentials!";
+                header("location: ./error.php");
+            } else {
+
+                $sql = "UPDATE famer SET fname='$name', fusername='$username', fmobile='$mobile', femail='$email',faddress='$address' WHERE fusername='$user';";
+
+                $result = mysqli_query($conn, $sql);
+
+                if ($result) {
+
+                    $user = $username;
+                    $_SESSION['Username'] = $username;
+
+                    $fetchProfile = "SELECT * FROM farmer WHERE fusername='$user'";
+
+                    $fetchProfileRresult = mysqli_query($conn, $fetchProfile);
+
+                    $User = $result->fetch_assoc();
+
+
+                    $_SESSION['message'] = "Profile Updated Successfully!";
+
+                    $_SESSION['Email'] = $User['femail'];
+                    $_SESSION['Name'] = $User['fname'];
+                    $_SESSION['Username'] = $User['fusername'];
+                    $_SESSION['Mobile'] = $User['fmobile'];
+                    $_SESSION['Addr'] = $User['faddress'];
+                    header("location: ./success.php");
+                } else {
+                    $_SESSION['message'] = "Error occurred while updating profile<br>Please try again!";
+                    header("location: ./error.php");
+                }
             }
         }
     } else {
-
-        $sql = "SELECT * FROM farmer WHERE fusername='$user'";
-
-        $result = mysqli_query($conn, $sql);
-        $num_rows = mysqli_num_rows($result);
-
-        if ($num_rows == 0) {
-            $_SESSION['message'] = "Invalid User Credentials!";
-            header("location: ../error.php");
-        } else {
-
-            $User = $result->fetch_assoc();
-
-            $sql = "UPDATE farmer SET fpassword='$retype_new_password', fhash='$newHash' WHERE fhash='$currHash';";
-
-            $result = mysqli_query($conn, $sql);
-
-            if ($result) {
-                $_SESSION['message'] = "Password changed Successfully!";
-                header("location: ../success.php");
-            } else {
-                $_SESSION['message'] = "Error occurred while changing password<br>Please try again!";
-                header("location: ../error.php");
-            }
-        }
+        $_SESSION['message'] = "All Input are Required!";
+        header("location: ./error.php");
     }
 }
 
@@ -154,26 +195,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <!-- Name Field -->
                             <div class="form-group">
                                 <label for="name">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" value="<?php echo $User['name']; ?>" required>
+                                <input type="text" class="form-control" id="name" name="name" value="<?php echo $current_name; ?>" required>
                             </div>
 
                             <!-- Username Field -->
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" value="<?php echo $User['username']; ?>" required>
+                                <input type="text" class="form-control" id="username" name="username" value="<?php echo $current_username; ?>" required>
                             </div>
 
                             <!-- Email Field -->
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" value="<?php echo $User['email']; ?>" required>
+                                <input type="email" class="form-control" id="email" name="email" value="<?php echo $current_email; ?>" required>
+                            </div>
+
+                            <!-- Phone Field -->
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" class="form-control" id="mobile" name="mobile" value="<?php echo $current_mobile; ?>" required>
                             </div>
 
 
                             <!-- Address Field -->
                             <div class="form-group">
-                                <label for="addres">Address</label>
-                                <input type="text" class="form-control" id="addres" name="address" value="<?php echo $User['address']; ?>" required>
+                                <label for="address">Address</label>
+                                <input type="text" class="form-control" id="addres" name="address" value="<?php echo $current_address; ?>" required>
                             </div>
 
 

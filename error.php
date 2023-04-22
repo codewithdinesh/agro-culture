@@ -46,7 +46,7 @@
                 if (isset($_SESSION['message']) and !empty($_SESSION['message'])) {
                     echo $_SESSION['message'];
                 } else {
-                    header("Location: ../index.php");
+                    header("Location: ./index.php");
                 }
                 ?>
             </p><br />
